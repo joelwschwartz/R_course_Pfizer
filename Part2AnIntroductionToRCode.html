@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Part 2:  An Introduction to R (Comparing Groups)</title>
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+
+</style>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: rgb(88, 72, 246)
+   }
+
+   pre .number {
+     color: rgb(0, 0, 205);
+   }
+
+   pre .comment {
+     color: rgb(76, 136, 107);
+   }
+
+   pre .keyword {
+     color: rgb(0, 0, 255);
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: rgb(3, 106, 7);
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+<!-- MathJax scripts -->
+<script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+</head>
+
+<body>
+<h1>Part 2:  An Introduction to R (Comparing Groups)</h1>
+
+<p>The material presented here is the second part in a four-part series on an overall introduction to R.  This material also parallels the presentation Part2AnIntroductionToR.pdf.  All material is covered by the BSD 2-clause open-source license:</p>
+
+<h2>Arbor Analytics License (BSD 2-clause)</h2>
+
+<p>Copyright ©2013, Arbor Analytics. All rights reserved.</p>
+
+<p>Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:</p>
+
+<p>Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution. </p>
+
+<p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &ldquo;AS IS&rdquo; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
+
+<h2>Background</h2>
+
+<p>The data used an an example in this part of the course come from a drug safet study.  The data is in a file called tumor.csv, and contain 50 animals&#39; information.  The 50 animals were randomly partitioned into 5 treatment groups (control, DrugA, DrugB, DrugC, and DrugD).  The primary question of interest is if tumor diamerters are different among treatment groups.</p>
+
+<h2>Bring the Data into R</h2>
+
+<p>Set the working directory and get data:</p>
+
+<pre><code class="r">myLocation &lt;- setwd(&quot;c:/Part2&quot;)
+setwd(myLocation)
+</code></pre>
+
+<p>Now get the data:</p>
+
+<pre><code class="r">tumor &lt;- read.csv(&quot;tumor.csv&quot;, header = TRUE)
+</code></pre>
+
+<p>Look at the first few lines of the data:</p>
+
+<pre><code class="r">head(tumor)
+</code></pre>
+
+<pre><code>##   Animal Control Drug_A Drug_B Drug_C Drug_D
+## 1      1    2.27   1.73   0.97   1.29   0.50
+## 2      2    1.38   1.19   1.08   1.13   0.70
+## 3      3    1.91   1.39   0.77   1.12   1.55
+## 4      4    2.21   1.08   1.29   1.08   0.98
+## 5      5    2.63   1.14   1.08   1.71   0.65
+## 6      6    2.73   1.22   1.18   2.49   0.70
+</code></pre>
+
+<h2>Wide versus Narrow Files</h2>
+
+<p>We call this a &ldquo;wide&rdquo; file since each drug is in a separate column.  We need the data to be in &ldquo;narrow&rdquo; form where the treatment information is in a column and the response is in another column.</p>
+
+<h2>Data Shaping</h2>
+
+<p>We could manually cut-and-paste th data to get the narrow form, but that is tedious and prone to mistakes.  Good news!  We can transform the shape of the data directly in R using the <code>reshape</code> package.</p>
+
+<pre><code>## Loading required package: plyr
+## 
+## Attaching package: &#39;reshape&#39;
+## 
+## The following object is masked from &#39;package:plyr&#39;:
+## 
+##     rename, round_any
+</code></pre>
+
+<pre><code class="r">install.packages(&quot;reshape&quot;, dependencies = TRUE)
+library(reshape)
+</code></pre>
+
+<p>Now we can use the <code>melt</code> function in the <code>reshape</code> package to shape the data:</p>
+
+<pre><code class="r">tumorNarrow = melt(tumor, id = &quot;Animal&quot;)
+</code></pre>
+
+<p>The <code>id</code> option tells the function which variables that should be kept in the stacking process.</p>
+
+<h2>Results of melt</h2>
+
+<p>Results of the melt function are:</p>
+
+<pre><code class="r">tumorNarrow[1:15, ]
+</code></pre>
+
+<pre><code>##    Animal variable value
+## 1       1  Control  2.27
+## 2       2  Control  1.38
+## 3       3  Control  1.91
+## 4       4  Control  2.21
+## 5       5  Control  2.63
+## 6       6  Control  2.73
+## 7       7  Control  2.08
+## 8       8  Control  2.92
+## 9       9  Control  2.78
+## 10     10  Control  1.87
+## 11      1   Drug_A  1.73
+## 12      2   Drug_A  1.19
+## 13      3   Drug_A  1.39
+## 14      4   Drug_A  1.08
+## 15      5   Drug_A  1.14
+</code></pre>
+
+<p>Let&#39;s rename the columns:</p>
+
+<pre><code class="r">colnames(tumorNarrow)[2:3] &lt;- c(&quot;Drug&quot;, &quot;Diameter&quot;)
+</code></pre>
+
+<h2>Visualize the Data</h2>
+
+<p>We can now visualize the tumor data.  Here&#39;s how to create a plot with Drug treatment on the x-axis and tumor diameter on the y-axis:</p>
+
+<pre><code class="r">library(ggplot2)
+ggplot(tumorNarrow, aes(x = Drug, y = Diameter)) + 
+geom_point(color = &quot;blue&quot;, shape = 20, size = 5) + 
+ggtitle(&quot;Tumor Diameter by Treatment&quot;) + 
+ylab(&quot;Diameter&quot;) + 
+xlab(&quot;&quot;) + 
+theme(axis.text.x = element_text(size = 12, color = &quot;black&quot;), axis.text.y = element_text(size = 12, 
+    color = &quot;black&quot;), axis.title.y = element_text(size = 15), title = element_text(size = 15))
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk viz1"/> </p>
+
+<h2>Modify Plot to Add Means and SD&#39;s</h2>
+
+<p>We often want to see means and SD&#39;s on the figure.  To that we must first compute these values.</p>
+
+<p>Install and load the doBy package:</p>
+
+<pre><code>## Loading required package: multcomp
+## Loading required package: mvtnorm
+## Loading required package: survival
+## Loading required package: splines
+## Loading required package: MASS
+</code></pre>
+
+<pre><code class="r">install.packages(&quot;doBy&quot;, dependencies = TRUE)
+library(doBy)
+</code></pre>
+
+<p>Then compute the means and standard deviations of Diameter for each Drug:</p>
+
+<pre><code class="r">tumorSummary &lt;- summaryBy(Diameter ~ Drug, data = tumorNarrow, FUN = c(mean, 
+    sd))
+</code></pre>
+
+<p>The first entry to the function is a &ldquo;formula&rdquo; (more on this later), and the third option identifies which summary functions we want to use.</p>
+
+<h2>Contents of tumorSummary</h2>
+
+<p>tumorSummary is a new data from with the following contents:</p>
+
+<pre><code class="r">head(tumorSummary)
+</code></pre>
+
+<pre><code>##      Drug Diameter.mean Diameter.sd
+## 1 Control         2.278      0.4881
+## 2  Drug_A         1.453      0.4782
+## 3  Drug_B         1.213      0.4641
+## 4  Drug_C         1.797      0.6283
+## 5  Drug_D         0.816      0.3209
+</code></pre>
+
+<p>Next we want to add this content to the figure.</p>
+
+<h2>Augmenting the Original Figure</h2>
+
+<p>Here&#39;s how we can add this content to the figure:</p>
+
+<pre><code class="r">ggplot(data = tumorNarrow, aes(x = Drug, y = Diameter)) + 
+geom_point(colour = &quot;blue&quot;, shape = 20, size = 5) + 
+ggtitle(&quot;Tumor Diameter by Treatment \n Mean +/- SD&quot;) + 
+ylab(&quot;Diameter&quot;) + xlab(&quot;&quot;) + 
+theme(axis.text.x = element_text(size = 12, color = &quot;black&quot;), axis.text.y = element_text(size = 12, 
+    color = &quot;black&quot;), axis.title.y = element_text(size = 15), title = element_text(size = 15)) + 
+
+geom_point(data = tumorSummary, aes(x = Drug, y = Diameter.mean), color = &quot;black&quot;, 
+    size = 7, shape = 18) + 
+geom_errorbar(data = tumorSummary, aes(x = Drug, y = Diameter.mean, ymin = Diameter.mean - 
+    Diameter.sd, ymax = Diameter.mean + Diameter.sd), color = &quot;black&quot;, width = 0.4, 
+    size = 0.8)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk viz2"/> </p>
+
+<h2>The Formula Interface</h2>
+
+<p>To estimate the parameters of a statistical model, R uses the &ldquo;formula&rdquo; interface.</p>
+
+<p>This interface places the &ldquo;reponse&rdquo; variable on the left and the &ldquo;predictors&rdquo; on the right as follows:</p>
+
+<p>\[ y  \mathtt{\sim}  x_1 + x_2 + ... + x_p \]</p>
+
+<p>For this data, the response is diameter and the predictor is Drug:</p>
+
+<p>\[ Diameter  \mathtt{\sim}  Drug -1 \]</p>
+
+<p>Technical detail:  -1 in the above formula means that the is no &ldquo;intercept&rdquo; in our model.</p>
+
+<h2>How to Perform ANOVA in R?</h2>
+
+<p>The &ldquo;aov&rdquo; function performs analysis of variance and is a standard function in R (no additional package needed).  Let&#39;s perform the ANOVA:</p>
+
+<pre><code class="r">tumorANOVA = aov(Diameter ~ Drug - 1, data = tumorNarrow)
+</code></pre>
+
+<p><code>tumorANOVA</code> is an object that contains all of the information about the model.  Typing <code>tumorANOVA</code> at the prompt gives the following output:</p>
+
+<pre><code class="r">tumorANOVA
+</code></pre>
+
+<pre><code>## Call:
+##    aov(formula = Diameter ~ Drug - 1, data = tumorNarrow)
+## 
+## Terms:
+##                   Drug Residuals
+## Sum of Squares  126.67     10.62
+## Deg. of Freedom      5        45
+## 
+## Residual standard error: 0.4858
+## Estimated effects are balanced
+</code></pre>
+
+<h2>Objects in <code>tumorANOVA</code></h2>
+
+<p>To get the names of the objects in tumorANOVA, type:</p>
+
+<pre><code class="r">names(tumorANOVA)
+</code></pre>
+
+<pre><code>##  [1] &quot;coefficients&quot;  &quot;residuals&quot;     &quot;effects&quot;       &quot;rank&quot;         
+##  [5] &quot;fitted.values&quot; &quot;assign&quot;        &quot;qr&quot;            &quot;df.residual&quot;  
+##  [9] &quot;contrasts&quot;     &quot;xlevels&quot;       &quot;call&quot;          &quot;terms&quot;        
+## [13] &quot;model&quot;
+</code></pre>
+
+<p>There are other built-in R functions that call these objects and help us understand the residuals and the significance of the F-test.  The <code>plot</code> function displays residual diagnostics, and the <code>summary</code> function provides the ANOVA F-test and corresponding significance.</p>
+
+<h2>Residuals are OK, so What&#39;s Next?</h2>
+
+<p>Since the residuals appear to meet the assumptions, we can examine the F-test and corresponding p-value:</p>
+
+<pre><code class="r">summary(tumorANOVA)
+</code></pre>
+
+<pre><code>##           Df Sum Sq Mean Sq F value Pr(&gt;F)    
+## Drug       5  126.7   25.33     107 &lt;2e-16 ***
+## Residuals 45   10.6    0.24                   
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+</code></pre>
+
+<p>The p-value is less than 0.05:  at least two drugs have different average tumor diameter responses.</p>
+
+<h2>What if the Residuals Don&#39;t Meet the Assumptions?</h2>
+
+<ul>
+<li>Variance not constant?</li>
+<li>Non-random pattern in the residuals?</li>
+<li>Residuals don&#39;t follow a normal distribution?</li>
+</ul>
+
+<p>Contact a friendly statistician..</p>
+
+<h2>How Do We Compare Two Treatments?</h2>
+
+<ul>
+<li><p>If the F-test is significant, then at least two treatment means are different.  Which two?</p></li>
+<li><p>We compare pairs of treatment means using &ldquo;post-hoc&rdquo; tests.</p></li>
+<li><p>But, we have to take special care when performing these tests to insure that we don&#39;t get false-positive findings</p></li>
+</ul>
+
+<h2>Important Question Prio to Performing Post-hoc Tests</h2>
+
+<p>Which comparisons are of interest?</p>
+
+<p>All possible treatment pairs?</p>
+
+<ul>
+<li>For 5 treatments, we have 10 possible treatment pairs to compare</li>
+</ul>
+
+<p>Each treatment to the control?</p>
+
+<ul>
+<li>For 4 treatments and a control, there are 4 possible treatment pairs to compare</li>
+</ul>
+
+<h2>Controlling for False Positive Findings</h2>
+
+<ul>
+<li><p>The more tests we perform, the more likely we will find at least one statistically significant comparison, just by chance (not due to a true treatment effect).  This is called a false positive result.</p></li>
+<li><p>We need to insure that we minimize the chance of a false positive finding</p></li>
+<li><p>If you desire only pairwise comparisons with the control, then we recommend using Dunnett&#39;s adjustment.</p></li>
+<li><p>If you desire all possible pairwise comparisons, then we recommend using Tukey&#39;s adjustment.</p></li>
+</ul>
+
+<h2>Dunnett&#39;s Adjustment</h2>
+
+<p>To perform post-hoc tests, we need the multcomp package.  We then need to set-up the appropriate contrasts:</p>
+
+<pre><code class="r">install.packages(&quot;multcomp&quot;, dependencies = TRUE)
+library(multcomp)
+</code></pre>
+
+<p>Tabulate the number of samples per treatment:</p>
+
+<pre><code class="r">nDrug = table(tumorNarrow$Drug)
+</code></pre>
+
+<p>Create the contrast matrix and compute the pairwise comparisons:</p>
+
+<pre><code class="r">CMDunnett = contrMat(nDrug)
+glhtDunnett = glht(tumorANOVA, linfct = CMDunnett)
+</code></pre>
+
+<p>Then get the summary for the glhtDunnett object:</p>
+
+<pre><code class="r">summary(glhtDunnett)
+</code></pre>
+
+<pre><code>## 
+##   Simultaneous Tests for General Linear Hypotheses
+## 
+## Multiple Comparisons of Means: Dunnett Contrasts
+## 
+## 
+## Fit: aov(formula = Diameter ~ Drug - 1, data = tumorNarrow)
+## 
+## Linear Hypotheses:
+##                       Estimate Std. Error t value Pr(&gt;|t|)    
+## Drug_A - Control == 0   -0.825      0.217   -3.80   0.0017 ** 
+## Drug_B - Control == 0   -1.065      0.217   -4.90   &lt;0.001 ***
+## Drug_C - Control == 0   -0.481      0.217   -2.21   0.1020    
+## Drug_D - Control == 0   -1.462      0.217   -6.73   &lt;0.001 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## (Adjusted p values reported -- single-step method)
+</code></pre>
+
+<h2>Tukey&#39;s Adjustment</h2>
+
+<p>Set-up the contrast matrix and compute pairwise tests:</p>
+
+<pre><code class="r">CMTukey = contrMat(nDrug, type = &quot;Tukey&quot;)
+glhtTukey = glht(tumorANOVA, linfct = CMTukey)
+summary(glhtTukey)
+</code></pre>
+
+<pre><code>## 
+##   Simultaneous Tests for General Linear Hypotheses
+## 
+## Multiple Comparisons of Means: Tukey Contrasts
+## 
+## 
+## Fit: aov(formula = Diameter ~ Drug - 1, data = tumorNarrow)
+## 
+## Linear Hypotheses:
+##                       Estimate Std. Error t value Pr(&gt;|t|)    
+## Drug_A - Control == 0   -0.825      0.217   -3.80   0.0038 ** 
+## Drug_B - Control == 0   -1.065      0.217   -4.90   &lt;0.001 ***
+## Drug_C - Control == 0   -0.481      0.217   -2.21   0.1933    
+## Drug_D - Control == 0   -1.462      0.217   -6.73   &lt;0.001 ***
+## Drug_B - Drug_A == 0    -0.240      0.217   -1.10   0.8032    
+## Drug_C - Drug_A == 0     0.344      0.217    1.58   0.5155    
+## Drug_D - Drug_A == 0    -0.637      0.217   -2.93   0.0402 *  
+## Drug_C - Drug_B == 0     0.584      0.217    2.69   0.0716 .  
+## Drug_D - Drug_B == 0    -0.397      0.217   -1.83   0.3711    
+## Drug_D - Drug_C == 0    -0.981      0.217   -4.52   &lt;0.001 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## (Adjusted p values reported -- single-step method)
+</code></pre>
+
+</body>
+
+</html>
+

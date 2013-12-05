@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Part 3:  An Introduction to R (Two Way ANOVA and Mixed Models)</title>
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+
+</style>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: rgb(88, 72, 246)
+   }
+
+   pre .number {
+     color: rgb(0, 0, 205);
+   }
+
+   pre .comment {
+     color: rgb(76, 136, 107);
+   }
+
+   pre .keyword {
+     color: rgb(0, 0, 255);
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: rgb(3, 106, 7);
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+</head>
+
+<body>
+<h1>Part 3:  An Introduction to R (Two Way ANOVA and Mixed Models)</h1>
+
+<p>The material presented here is the third part in a four-part series on an overall introduction to R.  This material also parallels the presentation Part3AnIntroductionToR.pdf.  All material is covered by the BSD 2-clause open-source license:</p>
+
+<h2>Arbor Analytics License (BSD 2-clause)</h2>
+
+<p>Copyright ©2013, Arbor Analytics. All rights reserved.</p>
+
+<p>Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:</p>
+
+<p>Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution. </p>
+
+<p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &ldquo;AS IS&rdquo; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
+
+<h2>Background</h2>
+
+<p>Three example data sets are used in this presentation.</p>
+
+<p>Data Set 1:  This data set follows a two-factor experimental design for a drug safety study.  The data is contained in a file called tumor2.csv.  In this experiment 5 drugs and 2 strains (10 total treatments) were used.  10 mice were allocated to each treatment.</p>
+
+<p>Data Set 2:  The second data set follows a repeated measures design.  The data is in a file called patchClamp.csv, and contains resting membrane potential measurements from 10 neurons.  Specifically, the single cell patch clamp experiment was run in rat striatal neurons.  10 neurons were randomly selected, and each neuron received each of three treatments.  Resting membrane potential was measured for each neuron on each treatment.</p>
+
+<p>Data set 3:  The third data set also follows a repeated measures design.  The data is in a file called wakefulness.csv.  In this experiment polysomnographic measurements (cortical EEG) of wakefulness were recorded for 16 rats.  Eight rats were randomly treated with vehicle while the remaining 8 rats received DrugA.  Total time awake post treatment (0-3 hr) was measured for each animal at days 0, 1, 2, 4, 5, 8, 11, and 14.</p>
+
+<h2>Two-way (factor) ANOVA</h2>
+
+<p>One-way ANOVA is applied to data where one qualitative factor is systematically different across the experimental units.  Two-way ANOVA is applied to data where two qualitative factors are systematically changed across the units.</p>
+
+<p>Tumor diameter example (2 factors):</p>
+
+<ul>
+<li>Drug (Control, Drugs A, B, C, and D)</li>
+<li>Strain of mouse (B6C3F7, WT)</li>
+<li>10 mice were allocated to each treatment combination (100 animals total)</li>
+</ul>
+
+<h2>Why Two-way ANOVA?</h2>
+
+<ul>
+<li><p>Account for different sources of variability in the same experiment.</p></li>
+<li><p>Combined data for a more powerful analysis.  Much better than analyzing treatment effect within each strain separately.</p></li>
+<li><p>Learn if there is an interaction between factors.  Do compounds affect B6C3F7 mice differently than WT mice?</p></li>
+</ul>
+
+<h2>Bring the Data into R and Visualize</h2>
+
+<p>Set the working directory and get data:</p>
+
+<pre><code class="r">myLocation &lt;- setwd(&quot;c:/Part3&quot;)
+setwd(myLocation)
+tumor2 &lt;- read.csv(&quot;tumor2.csv&quot;, header = TRUE)
+</code></pre>
+
+<pre><code class="r">library(ggplot2)
+ggplot(tumor2, aes(x = Drug, y = Diameter, color = Strain, shape = Strain)) + 
+
+geom_point(aes(color = Strain, shape = Strain), size = 5) + 
+ggtitle(&quot;Tumor Diameter by Drug and Strain&quot;) + 
+ylab(&quot;Diameter&quot;) + 
+xlab(&quot;&quot;) + 
+theme(axis.text.x = element_text(size = 12, color = &quot;black&quot;), axis.text.y = element_text(size = 12, 
+    color = &quot;black&quot;), axis.title.y = element_text(size = 15), title = element_text(size = 15))
+</code></pre>
+
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAbAAAAGwCAMAAAD/kMAYAAAAyVBMVEUAAAAAADoAAGYAOjoAOmYAOpAAXKMAZpAAZrYAv8QzgMU6AAA6ADo6AGY6Ojo6OmY6OpA6ZmY6ZrY6kJA6kLY6kNtmAABmADpmAGZmOgBmOjpmOpBmZmZmZrZmtrZmtv9/f3+AMwCQOgCQOjqQOmaQZgCQZpCQtpCQ27aQ29uQ2/+2ZgC2Zjq2Zma2tma225C22/+2/7a2/9u2///bkDrbtmbb/7bb/9vb///l5cXl5eXy8vL4dm3/tmb/25D/27b//7b//9v///87KKQlAAAACXBIWXMAAAsSAAALEgHS3X78AAAVVUlEQVR4nO2dC3/jxBXFlcC2cc22QOvwWIppoEBjWlpiIA2xa/v7f6hqRrp6WK/RnbkjX/mcH8smXh3NzP1rnhpZyQlSpWTqDEDjBGDKBGDKBGDKBGDKBGDKBGDKBGDKBGDKBGDKBGDKBGDKBGDKBGDKBGDKBGDKBGDKBGDKNArY4T7Jdfs0LpltxXZ8ePPsYNm/7UjjcH83nAhbx4fy7BtzulVXZhzLEVhxgSXJ2rmg2640hoDZRNgqgVFpTW7bMqMAmBEvm3mBd8nN40hLU93AxifSVAlsm1WujfmrMzPRxQaW/W2Kt1+udqbl2GUXo70yTfnSf9tS7KjAu/S4zLnLm5sO9/Eh++eWk6XAdtmHW/tBEeJ6Iub4fxSZzBL8S9neUfppbn6mhs+c9qfikE12ujS5LDOUhYrzueqOoyDAPlomyc136f+SuzwSpmDHh/eWSV4dKZZ5IZ+p+Vp3uXNgbSc73L+3zD5MYZ+MJW8C64mY438tgeUJltUnT98mlDWj9rP3PzurYfaEGTCbhYrTJOPfCI9TEGBpfm0t2S9tEWzZ7U/FlVc0KellmxXUfLBftrvN59ZS/lo5WVrpTCOV3OV52NC564lQJcgyebi31AlYmX72mTnb2SF5H7YqTk2nLJ02v7k7loIAuzOlS381n9nf0piZSlI2/OfAzI8mIE33ig43f8pfKyezB2ecTJtYdmn1RLKGlDK5s5HPM0fnSSx0c6A5SZZY9ZBNbdBRZoGcdOF19qoCCtOHUZ43JuS2edgZYOXwpAFsv8xbqLp7l4/zUhDGUv5aOdnhPqNoYa3KFrHlqigzedbdlelXma5rhxTHFdXdZqHmPFY6yTiKDIwKaa7RdXldc4EZS9EiNjvKUyewMv0BYHkbWAKrOxUBy7qOZsirTWITGI0SM6xZH9aCmyzlrzVgdyfqS3Y33983OspyKFpm8qxJLNM/u/DK5q04dlMDVneqApYNsc5DXh10NIDtkrzgec+V5L1WxW1qQnZR2yEA/VoDRoMO8/NHHzx2JVLN5NmIoky/Oi6hg/OCZj/tTCeWZSYDVnVqArajQXA95NWReAVY3rbRSgcNh8+BUSNoiRTD+rLGGKWQTDeS0dkk3YlUM3k2rC/Tr4S8PNgq76zs7G9rh/XZkVWnJmCmEOlEpwHMFrQcohXHJhRk+7npCm4e09amzW07E3sVF7/W+7B84nw60TiyPZFKJjMcXxbDuSL9asjTxCoT53yUSNP5fFJXdyoAdmHajlqGOpQdnlYpB5bPyYaVDSE2EZckhKQaWDbEdlLe9Uyxvh5WzsBeBuVwSGDff/+W/MH16PTYJPmdT3rDRklQJNXA4voATJkPwJT5AEyZD8CU+QBMmQ/AlPkATJlvdsAWUnG4EN/cgC0WTGIANkbOwH4bUgps8JhWDZ/6MnzDRklQpGA1bLHgVjHUsDECsIBGSVCkUMAWCzYxABujQMAWCz4xABsjAAtolARFCgNssfAgBmBjBGABjZKgSEGALRY+xABsjLCWGNAoCYoEYAGNkqBIABbQKAmKBGABjZKgSAAW0CgJigRgAY2SoEgAFtAoCYoEYAGNkqBI2CIQ0CgJioQtAgGNkqBIABbQKAmKhDvOAY2SoEgAFtAoCYqELQIBjZKgSAAW0CgJioQtAgGNkqBIABbQKAmKhC0CAY2SoEgAFtAoCYqEPR0BjZKgSFj8DWiUBEUCsIBGSVAkAAtolARFArCARklQJAALaJQERcINzIBGSVAk3A8LaJQERQKwgEZJUCTcDwtolARFukJg3L52XsD03A9jN92zAqbo9gqA5VFQAozfdM8JmKLbK/ymG8Bc4xDS59HXzgiYovthHk33jIAVkeCEISown752XsCUDOt9mm4Ac41DOJ9X0z0rYEqG9QDWiMT4MEQEVhscCYyOJEGRrmxYP+9BR/kevNPsgM1x0LF/+3TaFu8KdAvDhc/DvC6siwdmZKBlClCeDkXcWjD/QUdWw75KJZaDNHZi524mVVGsVMOqF9h+Wb4SNMAF2C7mCAB3nFt1+ISISQWCPWbDHedWbeiloAHK06rowNg1+uKB7cz7sZ1r2KvR+CBITos6U+QZLx6Yecu4cx/2+sojFh0Yv0ZfPrCa+rP6+sojFn9Ji3+BzAnY6yuTWHRgHjUawCZY0pr3WmJNvTnVB2yuS1OlenPKBBZ9DXL+a4mlenPK7sOc4hDON/+1xFL9WfXghRuYoxRqTwefF55eGaVg29zYvABslPCMc0CjJCgSgAU0SoIiAVhAoyQoEoAFNEqCImHQEdAoCYqEYX1AoyQo0lVNnP18cwI2ydJU7G/eATDXOLQr+m4rAHONQ7sArF+9ObWoFlGBxd8eNzdgafwATF5agcXfHjc3YDZ+ACYupcDib49zMUqCIoUClscPwKSlE1j03VZuRklQJJ0PpQPYsPqzGhdY9O1xjkZJUKTJv0VAz20ZADOKfluGf4HMCBi/iYp+W8bjApkRMHbgoy8a+1wgcwLGDXxsYF7pARiAMQRgAROUBEUCsIAJSoIiTXzHWTR+PcldOzB+4PnhA7B+uYVifBTYvACsX06xYEQh6hKTzSR378nMgKnYEGp5cbcyAFh8H4CNKs8F+IqtDCIJSoIiXRmwl1f+5h0Am8LnsdsKwCbw+dwZB7AJfD57QQAsvs9r844yYL8NajF8SKscTh3KV70zLpCgJCjSVb14u7aV4cq/ukgFMKwlViQ4Wg7nA7BSAKYLmOT0JqDPh9esgMXdqu3h8+AFYK5xCOrj85oTMK8JqYIJt6NREhQJwAIaJUGRru1N6R6+GQEzUjGs9/LNC5iSYb2PD8Bc43AhvlkB0zOsBzArALMHRBCG9QGNkqBIaoHF32k8I2ATzMPiPkThaJQERVJawyI/puRolARF0gnM674WgMVvEr2AzfvF24X6sxq5ifIBxl1BmxWw2E0UgA2rN6deD8rFBcZfpJ4bsEXM7/z1qmBitxUkQZGUAmPPwzwWqWcGzMYh4jCbO0SUvK0gCYp0Buz4sO44sD+rPk824nGjMToDdrhnAsvjoAbYbJ5e2b55bj+wN6evRRzw4m1hNWpYYnX7BGDjE5wAWLdcAyEQh2C+2hLaVT9uNAkwvPDNapsk67aOrC+j0Rd/80R5xnkB27z55X59fLgbBWyS+1PxgQ2m1wjaLh0OpMPu/cdnn3YNxccDS4f1ZmS/GznomOAOsOCCRXeKQ2c+0365Oj7cPh3um9f/5MCi77FQAuxkFiOSJG233lvePKb9TbIyNWy//GiZrAIAS+dhvxhmzXPJBYLlk1yw6Elx4MxnSidJK/vXXfonrQP7Dx5Pm9snC+zNrw/NWsEAZpvdNvZigZgxsLSKmRltBuwuj+7NowW2MuhCAOuSWCCirwl6NMED6bWEbZsCKoDtl7dPm7DA8rXEi+/DogNzSrAtwCmdAtj2pmwSpwYWd5QYf6LOArZNx+/bSg3bGngha9g2IcWchzFiHh2YW4KNoG2y8cAmuf2PAWbGi18ka4Ea1qLe8kTeFBN/ZYUJTEDT75qKvGLB37kzTEwSFCnIWuI0u5hi78mf01qiGmA+fe1FAmMuTfGBxZ0A+zTdDGAS36cYaC3Rr4IBGBsYey3Rj1esCfAUwGxqcsDYa4nsIeLMgeXJyQGraL9MylttAcrTVOwJcHxgRXoRgB0+ebQ3BGYELNtTHm2UWOFliWV1wLRfW7uYZH6zCyFpvcj+ZdvRvnUDs77EbnPbmbH9hqpYgPI0FH/F4iV/BoBjDQLsw+fT8etHE9rN2tSI48M6/eXw6VOxjeD4bcfO0FZg5zMwc87T6atUfSfRJAssUlodwL593n5hati2qEpVYD88dpwtU/9a4vGhOGeAC/AifPyJerAm8fZpY5bu11uK9SZtBc2/FO2aO7D6wxDV4X2A8lyEjz/vC9Ukpo2hQbVb7Ux0//dvc+R2RTVsoII1+rDqlHm/rNALUJ5L8HlM1EOMEnNgO1vDsj7MciuAHd719mC9g44ar5kA85n3hZiH2fDaW5lmLFiOEu9o7+LZFsZBYJVOK7+d6TpK5E5u4m659plGXORKB/f5MI/bFjHvh3nN+y5yLZH/BCab2ETAYjxuFGPxd/+2Y6NBb049lnxi3g+rTdQjPG4U5fYK74E+HcBmeAOzW25xwA3MqvKKtZBsEiMDm//tFftaQMk+bBm1SQQwT2DpPCwdKLYN7kUCMf/7Yfl7N0XnYZvVadfc5zYcCMaXgwFYCGDbO9auqcX475qKfz8s7iix4JUTEwB22lhaLTtJB+PAADbBUygevEIA+yG7ib//8Ofaup8HMLOYuElummv8Q3Gw2WLz0vD16SxgRfkyYNu0Afsi7XJW9qbleFzhHujLgY0MwQTAYn7tQxPY/uPTD9+/ezY3vSYGxgp7/D7Mx8cBVimfBXZ498u7X7/56ZunIMDstl/W0hR/xYLfhakEdvrnv1an7Zd/PU1dw9j1ZN7Aak2IBbb94/q0/3ylFlj0UaKHL8hqvbkbkm1FCwNs1zna7M0puyu6OmDeqgE7Zt/1cbgf+0AfF9j8R4mywGi+XN3Z4QKMPdoDMC9g5f6AsSsdzECwQTPTM4o5cZbQ2bA+/4nxxSrsxdgF7/vumYGPujQ1S2C2do0PITPwcRd/Aaxq5AQ+8u2VOQLLO7CRAeQGfnbAiq8uArAWXRywXgUoT4uYY0QAG1aA8rQIwMZqWmDcaRg78PMaJfYqQHmaYs+b2YH34AVgPisdr9kurdFJzmqlo1cBytMm9hVvV0g4KeK1wM7laZFHn8K7J4O3zI4oT1MeozbuXTQAcy9PUxMAY4MGsJdJHlPi+l4A7GWKp17YoF8A7GVCYLN5y2y3ApSnRb68Im76ccimJCiSznmYP7DRxFxm6pKgSFMDY608sFdI/FZWBm+0SoIiTQ6M6ePVEzaw11eXzSeSoEgXAIw9mxod9lrNHGV9ddrLIAmKND0wj9mURxc2voYBWB6KBWMRN0AXNraG5aarBxb7QUDuGLFI78qB8R61ZVcU/wn36Df0hdbUKx0uLU2rWGFnz8PcLhBJUCRnYOcb+5tyOORclZZmrNW6WKYFw+pmlARFmriGOXUNbfLqwUZbHdtgSVAkpZtwAjwEH+H7EiWkFBg/6kybEYDxL3g2MC5nIwCb4FFbds18AbApHrXlN6UvAJbJp5r4VM2RSRrNC5jHflCfxUSmjUVsVsC4W93z6EXaIgBgJO7DJEX4onyTaa0pvep5GHf3ExOYcNzZRklQpGmBybZQgX0ABmAMTQrMr2mL+RorN6MkKNLEb4ZgPwsR961IjkZJUKRpR4la3jvmaJQERZp4HsZ/hJW7XAFgubiBj7mkZcTP58yAqdj5i28RGFWegD7u2NJjkANgHj7ukhZ7NGsFYGwfd/oGYKPKE84HYMMKUJ5gPvYKCYCNKk84H2rYsAKUp1Ws6LGXIDFKHFOeNrHi57FojHnYiPK0iHvF89f4sdLhXp6m2H2Kx200rCV6BIILbJIbn8M34CRBkQBsTKJDZ44glcA8Bh0vAOYTCG4N85pP8b/tYIiYJCgSgLkKwF4mAcYd1rs0wJKgSNcGjFsvnbpMSVCkKwPGrpgAZhU78Oz03EalkqBISoExmzYAq2V3XAyMYg8euOk5TvwkQZEAzNGY07r2Lwfz4cV/cyaAZdkdF4M8EOzOaOHz6kyZ+zmSoEg6m8TXV97rhAGslt2RMXjxApY3UJGAYZSYCcBGSyswlzFAuPQwrM/FBlZEDzWsS8OF0rCnw58XaphnE8VLcaQLNSxXfGDeG1cvu4bt3xavuB8u1az3dDglJ07rNABsl9xeJLDCOj7FlzkD29x8J1zDJnmBttcTnxfeh+VN4lephNLPA8+0jTcyVQEWKcUuTduHvcS+TWLk93jTdQ86uL7YwLQ1iUYygWD6AKxDAJYJTaKnL3oNc/uuW3Fap6lXOtg+D14znofVJBQIri/yPAzAfH2YOA9JJhBcX+wmEcD8fBglDkskEFxf/FGik1ESFAnAAholQZEALKBREhQJwAIaJUGRACygURIUCcACGiVBkXQCi7805WSUBEVSCiz60pSTURIUSSuw6N+T75KgJCgSgI1JbyBFSVAkrcBiN4lOnaYkKJJSYLEHHW7DUklQJJ3Aog/rAczPB2DDkgkE0wdgw5IJBNMHYMOSCQTTFx0YRomevtijRMzDfH2Yhw1JKBBsH5sX+jCfQGjxAZgyH4Ap8wGYMh+AafNhlKjLhxqmzAdgynwApswHYMp8AKbMB2DKfACmzAdgynwApswHYMp8AKbMB2DKfACmzYfVem0+B14AdkE+1DBdPvRhynwKgf02KIdD1PoqwPrOHEGoYU5SWMNkAqHFB2DafBglavNhHqbNN8wLwC7LN2yUBEUCsIBGSVAkAAtolARFArCARklQJAALaJQERQKwgEZJUCQAC2iUBEUCsIBGSVAkAAtolARFArCARklQJGdgw+K+iFaLj28MKQCLYAwpAItgDCkAi2AMqYDAoBgCMGUCMGUCMGUCMGViA9slSfLm+ezDypvVG7/ZT5apK1n3nvjwyWPjs2Ff6xEuybWXg5deDHGBbW9TGJvzkg4CM58c7nvLufti1fhs2GeP2H/w2PywP7mecgynN1ASETGBZdXg+LBOM52kZd5/+Pf0ejM///inz26f8g/bgaUHP+/To358mx2SHvz+50Wkj19//+78gnfw2SOOX7cA67WV5eCkZ44YHzs/MYHtimtyszK/7JfZX2+f9st18WEHsDRK5qh9Hghz8E0R6TQGm8Z1O+zLathZ/IZtu0ZrOCa91uZbWFxgd/kPh0+fbMGyQmX/VT+sK/skrQgUhPSPObhSNbar8uQjfFmf8qYNWJ+tmZRrenSEe8zCiAmsuJZNxsuC5cAqH57Ziiu3DIQ5VVnw40Ma99vxvqxJPGvaHGztbZpjeopqWNH2c2pY3lq2X7kmgo020cFnj9i0Aeuz9fZhw+l1tKiS8h4llt1VCay/DzNjK4s1DZY5Ta1v2JrQNRqqYV92xCcdo8RO29AocSA9PaPEcv5SDgjTP8cHO6Y6dY4SafZi/2mbJH/+1I6+fk9X7vGb1pZm0DcwD+u0Dc3DxqUXQ5ex0tFEK+rjJsc3htP0wMww4+Yxu2KTG/dOnOnjJsc3htX0wKBRAjBlAjBlAjBlAjBlAjBlAjBlAjBlAjBlAjBlAjBlAjBlAjBlAjBlAjBlAjBlAjBlAjBlAjBlAjBlAjBlAjBlAjBlAjBl+j/lnwdpCWEIvgAAAABJRU5ErkJggg==" alt="plot of chunk viz1"/> </p>
+
+<h2>Visualize Treatment Means</h2>
+
+<p>Next let&#39;s visualize the treatment means.  First we need to compute the means of Diameter for each Drug and Strain.</p>
+
+<pre><code class="r">library(doBy)
+</code></pre>
+
+<pre><code>## Loading required package: multcomp
+## Loading required package: mvtnorm
+## Loading required package: survival
+## Loading required package: splines
+## Loading required package: MASS
+</code></pre>
+
+<pre><code class="r">
+tumor2Summary &lt;- summaryBy(Diameter ~ Drug + Strain, data = tumor2, FUN = mean)
+
+ggplot(tumor2Summary, aes(x = Drug, y = Diameter.mean, color = Strain, shape = Strain)) + 
+
+geom_point(aes(color = Strain, shape = Strain), size = 5) + 
+geom_line(aes(group = Strain), size = 1.2) + 
+ggtitle(&quot;Tumor Diameter Mean \n by Treatment and Strain&quot;) + 
+ylab(&quot;Diameter&quot;) + 
+xlab(&quot;&quot;) + 
+theme(axis.text.x = element_text(size = 12, color = &quot;black&quot;), axis.text.y = element_text(size = 12, 
+    color = &quot;black&quot;), axis.title.y = element_text(size = 15), title = element_text(size = 15))
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk viz2"/> </p>
+
+<h2>How to Perform Two-way ANOVA in R?</h2>
+
+<p>Same as one-way ANOVA:  the &ldquo;aov&rdquo; function.  In this case, we add a term <code>Drug:Strain</code> to quantify the effect of the interaction between Drug and Strain:</p>
+
+<pre><code class="r">tumor2ANOVA = aov(Diameter ~ Drug + Strain + Drug:Strain, data = tumor2)
+</code></pre>
+
+<p>The <code>summary</code> function gives us the ANOVA table (below).  This this case the interaction between Drug and Strain is not significant.  Also, Drug and Strain each explain a significant amount of variability in tumor diameter.</p>
+
+<pre><code class="r">summary(tumor2ANOVA)
+</code></pre>
+
+<pre><code>##             Df Sum Sq Mean Sq F value  Pr(&gt;F)    
+## Drug         4  24.62    6.16   24.67 8.4e-14 ***
+## Strain       1   3.73    3.73   14.95 0.00021 ***
+## Drug:Strain  4   0.02    0.01    0.02 0.99898    
+## Residuals   90  22.45    0.25                    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+</code></pre>
+
+<p>Similar to one-way ANOVA, we can check the residuals with the <code>plot</code> function:  <code>plot(tumor2ANOVA)</code>.</p>
+
+<p>Model coefficients can be obtained by typing:</p>
+
+<pre><code class="r">tumor2ANOVA$coefficients
+</code></pre>
+
+<pre><code>##         (Intercept)          DrugDrug_A          DrugDrug_B 
+##               2.278              -0.825              -1.065 
+##          DrugDrug_C          DrugDrug_D            StrainWT 
+##              -0.481              -1.462               0.398 
+## DrugDrug_A:StrainWT DrugDrug_B:StrainWT DrugDrug_C:StrainWT 
+##              -0.053              -0.032              -0.010 
+## DrugDrug_D:StrainWT 
+##               0.036
+</code></pre>
+
+<h2>Interaction Term</h2>
+
+<p>The interaction term in the model was not significant.  This indicates that the factors independently affect the response.  When the interaction is not significant, the mean response profiles will run parallel to each other.  When this is the case, we can perform pairwise comparisons for each factor (like we did in one-way ANOVA) using all of the data.</p>
+
+<p>If the interaction term is significant, then the factors work together to affect the response.  Visually, the mean response profiles will not run parallel to each other.  In this case, we must analyze the factor of interest within each level of the other factor (i.e. separate analyses).</p>
+
+<h2>Types of Factors</h2>
+
+<p>When all of the levels we desire of a factor are included in the experiment, then the factor is called &ldquo;fixed&rdquo;.  If we are only interested in studying WT and B6C3F7 mice, then Strain is a fixed effect.</p>
+
+<p>When only a random selection of the levels of a factor are included in the experiment, then the factor is called &ldquo;random&rdquo;.  If we are interested in studying many strains of mice and randomly select WT and B6C3F7 mice for this study, then Strain is a random effect.</p>
+
+<h2>Analyzing Mixed Effects Models in R</h2>
+
+<p>The <code>aov</code> function is only appropriate for fixed effects models.  To analyze the mixed models, we need the <code>lme4</code> package.  Install and load the <code>lme4</code> package:</p>
+
+<pre><code>## Loading required package: lattice
+## Loading required package: Matrix
+## 
+## Attaching package: &#39;lme4&#39;
+## 
+## The following object is masked from &#39;package:ggplot2&#39;:
+## 
+##     fortify
+</code></pre>
+
+<pre><code class="r">install.packages(&quot;lme4&quot;, dependencies = TRUE)
+library(lme4)
+</code></pre>
+
+<p>We will use the <code>lmer</code> function within <code>lme4</code>.  Fixed effects appear the same way in the formula.  Random effects are listed as <code>(1|random effect)</code>.</p>
+
+<h2>Strain as a Random Factor</h2>
+
+<p>Let&#39;s fit the previous model with Strain as a random factor.  This means that we randomly selected the strains in this experiment from a set of strains that we desired to study.  Here&#39;s how we would fit that model:</p>
+
+<pre><code class="r">tumor2Mixed = lmer(Diameter ~ Drug + (1 | Strain) + (1 | Drug:Strain), data = tumor2)
+</code></pre>
+
+<p>Because Strain is a random effect, the interaction term, <code>(1|Drug:Strain)</code> is also a random effect.</p>
+
+<p>The model estimation results are:</p>
+
+<pre><code class="r">summary(tumor2Mixed)
+</code></pre>
+
+<pre><code>## Linear mixed model fit by REML [&#39;lmerMod&#39;]
+## Formula: Diameter ~ Drug + (1 | Strain) + (1 | Drug:Strain) 
+##    Data: tumor2 
+## 
+## REML criterion at convergence: 151.4 
+## 
+## Random effects:
+##  Groups      Name        Variance Std.Dev.
+##  Drug:Strain (Intercept) 0.0000   0.000   
+##  Strain      (Intercept) 0.0698   0.264   
+##  Residual                0.2391   0.489   
+## Number of obs: 100, groups: Drug:Strain, 10; Strain, 2
+## 
+## Fixed effects:
+##             Estimate Std. Error t value
+## (Intercept)    2.477      0.216   11.44
+## DrugDrug_A    -0.852      0.155   -5.51
+## DrugDrug_B    -1.081      0.155   -6.99
+## DrugDrug_C    -0.486      0.155   -3.14
+## DrugDrug_D    -1.444      0.155   -9.34
+## 
+## Correlation of Fixed Effects:
+##            (Intr) DrgD_A DrgD_B DrgD_C
+## DrugDrug_A -0.357                     
+## DrugDrug_B -0.357  0.500              
+## DrugDrug_C -0.357  0.500  0.500       
+## DrugDrug_D -0.357  0.500  0.500  0.500
+</code></pre>
+
+<p>The estimate of the amount of between-strain variation is found within the random effects part of the output.  Notice that we do not get an estimate of the effect of WT in the Fixed effects part of the table.</p>
+
+<h2>Other Examples of Random Effects</h2>
+
+<p>Two other common designs contain random effects:</p>
+
+<ul>
+<li><p>Repeated measures designs:  In this experimental design, each subject receives all treatments.  Here we&#39;re interested in studying the effect of the treatment, while accounting for the within-subject variation.</p></li>
+<li><p>Cross-over designs:  In this type of design, all subjects receive all treatments following particular rules about treatment order
+Each subject is randomly assigned to one treatment and is measured at two or more subsequent time points,  In this layout, we&#39;re usually interested in understanding if treatment means change over time.</p></li>
+</ul>
+
+<h2>Repeated Measures:  Example 1</h2>
+
+<p>The data presented here comes from a single cell patch clamping experiment in rat striatal neurons.  10 neurons were randomly selected, and each  neuron received three treatments:  </p>
+
+<ul>
+<li>Control</li>
+<li>Drug_A</li>
+<li>Drug_B</li>
+</ul>
+
+<p>The resting membrane potential was measured for each neuron.</p>
+
+<h2>Bring the Data into R and Visualize</h2>
+
+<p>Let&#39;s get the data and visualize it.  Prior to visualization, we must first change the Neuron variable to a factor.</p>
+
+<pre><code class="r">patch &lt;- read.csv(&quot;patchClamp.csv&quot;, header = TRUE)
+patch$Neuron &lt;- factor(patch$Neuron)
+</code></pre>
+
+<pre><code class="r">ggplot(patch, aes(x = Drug, y = RMP, color = Neuron)) + 
+geom_point(aes(color = Neuron), size = 5) + 
+geom_line(aes(group = Neuron), size = 1.2) + 
+ggtitle(&quot;RMP by Drug and Neuron&quot;) + 
+ylab(&quot;RMP&quot;) + 
+xlab(&quot;&quot;) + 
+theme(axis.text.x = element_text(size = 12, color = &quot;black&quot;), axis.text.y = element_text(size = 12, 
+    color = &quot;black&quot;), axis.title.y = element_text(size = 15), title = element_text(size = 15))
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk patch3"/> </p>
+
+<h2>How to Analyze in R?</h2>
+
+<p>Here&#39;s how we perform mixed model analysis:</p>
+
+<pre><code class="r">patchMixed = lmer(RMP ~ Drug + (1 | Neuron), data = patch)
+summary(patchMixed)
+</code></pre>
+
+<pre><code>## Linear mixed model fit by REML [&#39;lmerMod&#39;]
+## Formula: RMP ~ Drug + (1 | Neuron) 
+##    Data: patch 
+## 
+## REML criterion at convergence: 174.7 
+## 
+## Random effects:
+##  Groups   Name        Variance Std.Dev.
+##  Neuron   (Intercept) 81.05    9.00    
+##  Residual              9.95    3.15    
+## Number of obs: 30, groups: Neuron, 10
+## 
+## Fixed effects:
+##             Estimate Std. Error t value
+## (Intercept)   -56.06       3.02  -18.58
+## DrugDrug_A      4.20       1.41    2.98
+## DrugDrug_B      5.13       1.41    3.64
+## 
+## Correlation of Fixed Effects:
+##            (Intr) DrgD_A
+## DrugDrug_A -0.234       
+## DrugDrug_B -0.234  0.500
+</code></pre>
+
+<p>In this case, the within- and between- neuron variation is summarized in the Random Effects part of the above summary.  The Fixed Effects part of the summary provides the expected response for control (Intercept), and amount of increase above control for DrugA and DrugB.</p>
+
+<h2>What We&#39;re Really Interested In</h2>
+
+<p>We would really like to know if there are differences among any of the treatments.  In this case we want to perform all pairwise comparisons, with Tukey&#39;s adjustment.</p>
+
+<pre><code class="r">library(multcomp)
+glhtTukey &lt;- glht(patchMixed, linfct = mcp(Drug = &quot;Tukey&quot;))
+summary(glhtTukey)
+</code></pre>
+
+<pre><code>## 
+##   Simultaneous Tests for General Linear Hypotheses
+## 
+## Multiple Comparisons of Means: Tukey Contrasts
+## 
+## 
+## Fit: lmer(formula = RMP ~ Drug + (1 | Neuron), data = patch)
+## 
+## Linear Hypotheses:
+##                       Estimate Std. Error z value Pr(&gt;|z|)    
+## Drug_A - Control == 0    4.197      1.411    2.98   0.0082 ** 
+## Drug_B - Control == 0    5.131      1.411    3.64   &lt;0.001 ***
+## Drug_B - Drug_A == 0     0.934      1.411    0.66   0.7856    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## (Adjusted p values reported -- single-step method)
+</code></pre>
+
+<p>For this experiment, DrugA and DrugB are significantly different from control, but are not different from each other.</p>
+
+<h2>Consequences of the Wrong Model</h2>
+
+<p>What happens if we ignore the fact that each neuron received all three treatments?  Let&#39;s perform a one-way ANOVA:</p>
+
+<pre><code class="r">patchANOVA &lt;- aov(RMP ~ Drug, data = patch)
+summary(patchANOVA)
+</code></pre>
+
+<pre><code>##             Df Sum Sq Mean Sq F value Pr(&gt;F)
+## Drug         2    149    74.7    0.82   0.45
+## Residuals   27   2457    91.0
+</code></pre>
+
+<p>In this model, drug does not explain a significant amount of response variation!  WHY?  The between-neuron variation is now consolidated into the residual mean square.  Notice that the two-factor mixed-model allows us to pull out the between-neuron variation.</p>
+
+<h2>Repeated Measures:  Example 2</h2>
+
+<p>In this experiment polysomnographic measurements (cortical EEG) of wakefulness were recorded for 16 rats.  Eight rats were randomly treated with vehicle while the remaining 8 rats received DrugA.  Total time awake post treatment (0-3 hr) was measured for each animal at days 0, 1, 2, 4, 5, 8, 11, and 14.</p>
+
+<h2>Bring the Data into R</h2>
+
+<p>Let&#39;s get the data and visualize it.  Prior to visualization, we must first change the Neuron variable to a factor.</p>
+
+<pre><code class="r">wake &lt;- read.csv(&quot;wakefulness.csv&quot;, header = TRUE)
+wake$Animal &lt;- factor(wake$Animal)
+wake$Day &lt;- factor(wake$Day)
+</code></pre>
+
+<p>Compute means, standard deviations, and number of subjects per Drug and Day:</p>
+
+<pre><code class="r">library(doBy)
+forPlot &lt;- summaryBy(TTA ~ Drug + Day, data = wake, FUN = c(mean, sd, length))
+forPlot$TTA.SEM &lt;- forPlot$TTA.sd/sqrt(forPlot$TTA.length)
+nDrug &lt;- length(unique(wake$Drug))
+</code></pre>
+
+<h2>Visualize the Data into R</h2>
+
+<pre><code class="r">ggplot(forPlot, aes(x = Day, y = TTA.mean, color = Drug, shape = Drug)) + 
+geom_point(aes(color = Drug, shape = Drug), size = 3) + 
+geom_line(aes(group = Drug), size = 1) + 
+geom_errorbar(aes(ymin = TTA.mean - TTA.SEM, ymax = TTA.mean + TTA.SEM), width = 0.3, 
+    size = 1) + 
+ggtitle(&quot;TTA (0-3 hr) by Drug and Time \n mean +/- SE&quot;) + 
+xlab(&quot;Day&quot;) + 
+ylab(&quot;TTA&quot;) + 
+theme(axis.text.x = element_text(size = 12, color = &quot;black&quot;), axis.text.y = element_text(size = 12, 
+    color = &quot;black&quot;), axis.title.y = element_text(size = 15), title = element_text(size = 15))
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk wakeviz1"/> </p>
+
+<h2>How to Analyze in R?</h2>
+
+<p>Perform mixed model analysis.  In this model animal is a random effect and is nested within drug <code>(1|Drug/Animal)</code>, and term measures the interaction between drug and day <code>Drug:Day</code>.  The <code>Random effects</code> block of the output provides estimates of variation due to the random effects, while the <code>Fixed effects</code> block of the output provides estimates of the effect of each level of the factors.</p>
+
+<pre><code class="r">wakeMixed &lt;- lmer(TTA ~ Drug + (1 | Drug/Animal) + Day + Drug:Day, data = wake)
+summary(wakeMixed)
+</code></pre>
+
+<pre><code>## Linear mixed model fit by REML [&#39;lmerMod&#39;]
+## Formula: TTA ~ Drug + (1 | Drug/Animal) + Day + Drug:Day 
+##    Data: wake 
+## 
+## REML criterion at convergence: 835.3 
+## 
+## Random effects:
+##  Groups      Name        Variance Std.Dev.
+##  Animal:Drug (Intercept)   1.31    1.14   
+##  Drug        (Intercept) 110.97   10.53   
+##  Residual                 74.16    8.61   
+## Number of obs: 128, groups: Animal:Drug, 16; Drug, 2
+## 
+## Fixed effects:
+##                   Estimate Std. Error t value
+## (Intercept)          60.79      10.97    5.54
+## Drugvehicle         -18.14      15.52   -1.17
+## Day1                 12.13       4.31    2.82
+## Day2                 11.75       4.31    2.73
+## Day4                 27.84       4.31    6.47
+## Day5                 19.16       4.31    4.45
+## Day8                 29.45       4.31    6.84
+## Day11                 3.77       4.31    0.88
+## Day14                36.15       4.31    8.39
+## Drugvehicle:Day1    -11.76       6.09   -1.93
+## Drugvehicle:Day2     -5.85       6.09   -0.96
+## Drugvehicle:Day4     -7.89       6.09   -1.30
+## Drugvehicle:Day5     -6.46       6.09   -1.06
+## Drugvehicle:Day8    -29.04       6.09   -4.77
+## Drugvehicle:Day11   -10.86       6.09   -1.78
+## Drugvehicle:Day14   -23.39       6.09   -3.84
+## 
+## Correlation of Fixed Effects:
+##             (Intr) Drgvhc Day1   Day2   Day4   Day5   Day8   Day11  Day14 
+## Drugvehicle -0.707                                                        
+## Day1        -0.196  0.139                                                 
+## Day2        -0.196  0.139  0.500                                          
+## Day4        -0.196  0.139  0.500  0.500                                   
+## Day5        -0.196  0.139  0.500  0.500  0.500                            
+## Day8        -0.196  0.139  0.500  0.500  0.500  0.500                     
+## Day11       -0.196  0.139  0.500  0.500  0.500  0.500  0.500              
+## Day14       -0.196  0.139  0.500  0.500  0.500  0.500  0.500  0.500       
+## Drgvhcl:Dy1  0.139 -0.196 -0.707 -0.354 -0.354 -0.354 -0.354 -0.354 -0.354
+## Drgvhcl:Dy2  0.139 -0.196 -0.354 -0.707 -0.354 -0.354 -0.354 -0.354 -0.354
+## Drgvhcl:Dy4  0.139 -0.196 -0.354 -0.354 -0.707 -0.354 -0.354 -0.354 -0.354
+## Drgvhcl:Dy5  0.139 -0.196 -0.354 -0.354 -0.354 -0.707 -0.354 -0.354 -0.354
+## Drgvhcl:Dy8  0.139 -0.196 -0.354 -0.354 -0.354 -0.354 -0.707 -0.354 -0.354
+## Drgvhcl:D11  0.139 -0.196 -0.354 -0.354 -0.354 -0.354 -0.354 -0.707 -0.354
+## Drgvhcl:D14  0.139 -0.196 -0.354 -0.354 -0.354 -0.354 -0.354 -0.354 -0.707
+##             Drg:D1 Drg:D2 Drg:D4 Drg:D5 Drg:D8 Dr:D11
+## Drugvehicle                                          
+## Day1                                                 
+## Day2                                                 
+## Day4                                                 
+## Day5                                                 
+## Day8                                                 
+## Day11                                                
+## Day14                                                
+## Drgvhcl:Dy1                                          
+## Drgvhcl:Dy2  0.500                                   
+## Drgvhcl:Dy4  0.500  0.500                            
+## Drgvhcl:Dy5  0.500  0.500  0.500                     
+## Drgvhcl:Dy8  0.500  0.500  0.500  0.500              
+## Drgvhcl:D11  0.500  0.500  0.500  0.500  0.500       
+## Drgvhcl:D14  0.500  0.500  0.500  0.500  0.500  0.500
+</code></pre>
+
+<h2>Are Fixed Effects Significant?</h2>
+
+<p>To understand if the fixed effects are significant, we need to install the <code>car</code> package and use the <code>Anova</code> function.</p>
+
+<pre><code class="r">install.packages(&quot;car&quot;, dependencies = TRUE)
+library(car)
+</code></pre>
+
+<p>The output below indicates that there is a significant interaction between Drug and Day.  This means that the time-course profiles between vehicle and DrugA are not parallel.  If we want to make inferences about treatments, we need to do that within specified days.</p>
+
+<pre><code class="r">Anova(wakeMixed, type = 2, test.statistic = &quot;F&quot;)
+</code></pre>
+
+<pre><code>## Analysis of Deviance Table (Type II Wald F tests with Kenward-Roger df)
+## 
+## Response: TTA
+##              F Df Df.res  Pr(&gt;F)    
+## Drug      4.02  1 100929   0.045 *  
+## Day      21.35  7     98 &lt; 2e-16 ***
+## Drug:Day  5.01  7     98 6.9e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+</code></pre>
+
+</body>
+
+</html>
+
